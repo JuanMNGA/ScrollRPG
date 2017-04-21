@@ -84,7 +84,8 @@ public class MainTitleScreen implements Screen{
 				start.addAction(Actions.sequence(
 						Actions.fadeOut(1f)
 						));
-				// 
+				// Esta parte del codigo remueve los listeners de los botones del menu principal, aunque ahora no es necesario, ya que pasaremos de ventana.
+				/*
 				start.removeListener(this);
 				exit.addAction(Actions.sequence(
 						Actions.fadeOut(1f),
@@ -98,6 +99,11 @@ public class MainTitleScreen implements Screen{
 							
 						})
 						));
+				*/
+				exit.addAction(Actions.sequence(
+						Actions.delay(0.4f),
+						Actions.fadeOut(1f)
+						));
 			}
 			
 		});
@@ -107,8 +113,23 @@ public class MainTitleScreen implements Screen{
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				// TODO Auto-generated method stub
-				dispose();
-				Gdx.app.exit();
+				start.addAction(Actions.sequence(
+						Actions.fadeOut(1f)
+						));
+				exit.addAction(Actions.sequence(
+						Actions.delay(0.4f),
+						Actions.fadeOut(1f),
+						Actions.run(new Runnable(){
+
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								dispose();
+								Gdx.app.exit();
+							}
+							
+						})
+						));
 			}
 			
 		});
