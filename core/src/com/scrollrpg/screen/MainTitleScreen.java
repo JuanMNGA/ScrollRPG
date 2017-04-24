@@ -82,7 +82,16 @@ public class MainTitleScreen implements Screen{
 				// TODO Auto-generated method stub
 				System.out.println("HOLA");
 				start.addAction(Actions.sequence(
-						Actions.fadeOut(1f)
+						Actions.fadeOut(1f),
+						Actions.run(new Runnable(){
+
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								g.setScreen(new GameScreen(g, i18nstrings, assets));
+							}
+							
+						})
 						));
 				// Esta parte del codigo remueve los listeners de los botones del menu principal, aunque ahora no es necesario, ya que pasaremos de ventana.
 				/*

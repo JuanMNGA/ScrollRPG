@@ -28,6 +28,7 @@ public class AssetsUtils {
 		// Loaders
 		// Textos i18n
 		assets.load("i18n/messages", I18NBundle.class);
+		assets.load("i18n/hud", I18NBundle.class);
 		// Fuente por defecto
 		assets.load("arial.ttf", BitmapFont.class, CreateFontParameter(20,Color.WHITE));
 		// Carga del resto de archivos
