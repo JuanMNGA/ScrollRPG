@@ -12,13 +12,14 @@ import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.scrollrpg.controller.MapController;
 import com.scrollrpg.game.MainGame;
+import com.scrollrpg.game.item.Player;
 import com.scrollrpg.utils.AssetsUtils;
 import com.scrollrpg.utils.HUDUtils;
 import com.scrollrpg.utils.SkinUtils;
 
 public class GameScreen implements Screen{
 	
-	private Stage stage;
+	private Stage stage, hudStage;
 	private Skin skin;
 	
 	private AssetsUtils assets;
@@ -28,6 +29,8 @@ public class GameScreen implements Screen{
 	
 	private MapController map_controller;
 	
+	private Player mainPlayer;
+	
 	public GameScreen(MainGame g, I18NBundle i18nstrings, AssetsUtils assets){
 		this.g = g;
 		this.assets = assets;
@@ -35,15 +38,17 @@ public class GameScreen implements Screen{
 		i18nmenu = assets.getManager().get("i18n/hud", I18NBundle.class);
 		map_controller = new MapController();
 		hud = new HUDUtils();
+		mainPlayer = new Player(new Texture(Gdx.files.internal("badlogic.jpg")));
 		create();
 	}
 	
 	private void create(){
 		
 		stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+		hudStage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		
 		// Nunca olvidar esta linea, sin ella, el stage no funciona
-		Gdx.input.setInputProcessor(stage);
+		Gdx.input.setInputProcessor(hudStage);
 		
 		skin = new SkinUtils().CreateSkin();
 		
@@ -60,11 +65,15 @@ public class GameScreen implements Screen{
 		final Image imagen = new Image(new Texture(Gdx.files.internal("badlogic.jpg")));
 		imagen.setFillParent(true);
 		
+		mainPlayer.setBounds(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, 100, 100);
+		
 		stage.addActor(imagen);
+		
+		stage.addActor(mainPlayer);
 		
 		// Create hud
 		// Ultima linea de todas, para que el HUD siempre quede arriba
-		stage = hud.createHUD(stage, skin, screenProportion, i18nmenu);
+		hudStage = hud.createHUD(hudStage, skin, screenProportion, i18nmenu);
 		
 	}
 
@@ -75,10 +84,13 @@ public class GameScreen implements Screen{
 
 	@Override
 	public void render(float delta) {
+		mainPlayer.move(stage);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		stage.act(delta);
+		hudStage.act(delta);
 		stage.draw();
+		hudStage.draw();
 	}
 
 	@Override
