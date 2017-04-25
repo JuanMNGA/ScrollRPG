@@ -3,18 +3,17 @@ package com.scrollrpg.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.scrollrpg.controller.MapController;
 import com.scrollrpg.game.MainGame;
 import com.scrollrpg.utils.AssetsUtils;
+import com.scrollrpg.utils.HUDUtils;
 import com.scrollrpg.utils.SkinUtils;
 
 public class GameScreen implements Screen{
@@ -23,6 +22,7 @@ public class GameScreen implements Screen{
 	private Skin skin;
 	
 	private AssetsUtils assets;
+	private HUDUtils hud;
 	private I18NBundle i18nstrings, i18nmenu;
 	private MainGame g;
 	
@@ -34,12 +34,13 @@ public class GameScreen implements Screen{
 		this.i18nstrings = i18nstrings;
 		i18nmenu = assets.getManager().get("i18n/hud", I18NBundle.class);
 		map_controller = new MapController();
+		hud = new HUDUtils();
 		create();
 	}
 	
 	private void create(){
 		
-		stage = new Stage(new ExtendViewport(640, 480));
+		stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		
 		// Nunca olvidar esta linea, sin ella, el stage no funciona
 		Gdx.input.setInputProcessor(stage);
@@ -56,38 +57,24 @@ public class GameScreen implements Screen{
 		
 		Vector2 screenProportion = new Vector2(Gdx.graphics.getWidth()*percentageW, Gdx.graphics.getHeight()*percentageH);
 		
+		final Image imagen = new Image(new Texture(Gdx.files.internal("badlogic.jpg")));
+		imagen.setFillParent(true);
+		
+		stage.addActor(imagen);
+		
 		// Create hud
+		// Ultima linea de todas, para que el HUD siempre quede arriba
+		stage = hud.createHUD(stage, skin, screenProportion, i18nmenu);
 		
-		Table hud_layout = new Table();
-		
-		final TextButton menu_button = new TextButton(i18nmenu.get("hud.main.menu"), skin);
-		
-		menu_button.addListener(new ChangeListener(){
-
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				// TODO Auto-generated method stub
-				System.out.println(menu_button.getText().toString());
-			}
-			
-		});
-		
-		hud_layout.add(menu_button).width(screenProportion.x).height(screenProportion.y);
-		
-		hud_layout.setFillParent(true);
-		hud_layout.right().bottom();
-		stage.addActor(hud_layout);
 	}
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void render(float delta) {
-		// TODO Auto-generated method stub
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		stage.act(delta);
@@ -96,31 +83,26 @@ public class GameScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 		stage.dispose();
 	}
 

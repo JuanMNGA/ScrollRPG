@@ -36,7 +36,7 @@ public class MainTitleScreen implements Screen{
 	}
 	
 	private void create(){
-		stage = new Stage(new ExtendViewport(640, 480));
+		stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		
 		// Nunca olvidar esta linea, sin ella, el stage no funciona
 		Gdx.input.setInputProcessor(stage);
@@ -79,15 +79,12 @@ public class MainTitleScreen implements Screen{
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				// TODO Auto-generated method stub
-				System.out.println("HOLA");
 				start.addAction(Actions.sequence(
 						Actions.fadeOut(1f),
 						Actions.run(new Runnable(){
 
 							@Override
 							public void run() {
-								// TODO Auto-generated method stub
 								g.setScreen(new GameScreen(g, i18nstrings, assets));
 							}
 							
@@ -102,7 +99,6 @@ public class MainTitleScreen implements Screen{
 
 							@Override
 							public void run() {
-								// TODO Auto-generated method stub
 								exit.remove();
 							}
 							
@@ -121,7 +117,6 @@ public class MainTitleScreen implements Screen{
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				// TODO Auto-generated method stub
 				start.addAction(Actions.sequence(
 						Actions.fadeOut(1f)
 						));
@@ -132,7 +127,6 @@ public class MainTitleScreen implements Screen{
 
 							@Override
 							public void run() {
-								// TODO Auto-generated method stub
 								dispose();
 								Gdx.app.exit();
 							}
@@ -155,7 +149,6 @@ public class MainTitleScreen implements Screen{
 	}
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -170,25 +163,21 @@ public class MainTitleScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
 		
 	}
 
