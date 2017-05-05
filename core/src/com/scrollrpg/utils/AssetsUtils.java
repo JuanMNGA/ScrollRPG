@@ -3,8 +3,10 @@ package com.scrollrpg.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -22,6 +24,7 @@ public class AssetsUtils {
 		FileHandleResolver resolver = new InternalFileHandleResolver();
 		assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
 		assets.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
+		assets.setLoader(Texture.class, new TextureLoader(resolver));
 	}
 	
 	public void load(){
@@ -33,6 +36,7 @@ public class AssetsUtils {
 		assets.load("arial.ttf", BitmapFont.class, CreateFontParameter(20,Color.WHITE));
 		// Carga del resto de archivos
 		// Texturas
+		assets.load("textures/bricks.png", Texture.class);
 		// Musica
 	}
 	

@@ -1,7 +1,9 @@
 package com.scrollrpg.builder.item;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Platform {
@@ -12,6 +14,13 @@ public class Platform {
 	public Platform(){
 		platformLogic = new Rectangle();
 		platformTile = new Sprite();
+	}
+	
+	public Platform(float x, float y, float width, float height, Texture texture){
+		platformLogic = new Rectangle();
+		platformTile = new Sprite();
+		platformLogic.set(x, y, width, height);
+		setSprite(texture);
 	}
 	
 	public void setPlatform(float x, float y, float width, float height, Texture texture){
@@ -26,6 +35,10 @@ public class Platform {
 	
 	public Rectangle getRectangle(){
 		return platformLogic;
+	}
+	
+	public void draw(Batch batch, float delta){
+		batch.draw(platformTile, platformLogic.x, platformLogic.y, platformLogic.width, platformLogic.height);
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.scrollrpg.builder.item;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
 
 public class Map {
@@ -57,5 +58,13 @@ public class Map {
 				}
 			}
 		}
+	}
+	
+	public void draw(Batch batch, float delta){
+		batch.begin();
+		for(int i = 0; i < platforms.size; ++i){
+			platforms.get(i).draw(batch, delta);
+		}
+		batch.end();
 	}
 }

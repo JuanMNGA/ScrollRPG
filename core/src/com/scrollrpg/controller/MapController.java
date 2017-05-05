@@ -2,13 +2,17 @@ package com.scrollrpg.controller;
 
 import com.scrollrpg.builder.MapBuilder;
 import com.scrollrpg.builder.item.Map;
+import com.scrollrpg.utils.AssetsUtils;
 
 public class MapController {
 	
 	private MapBuilder map_builder;
 	
-	public MapController(){
-		map_builder = new MapBuilder();
+	private AssetsUtils assets;
+	
+	public MapController(AssetsUtils assets){
+		this.assets = assets;
+		map_builder = new MapBuilder(this.assets);
 	}
 	
 	public Map getFirstMap(){

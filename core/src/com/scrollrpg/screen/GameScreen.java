@@ -5,11 +5,13 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.scrollrpg.builder.item.Map;
 import com.scrollrpg.controller.MapController;
 import com.scrollrpg.game.MainGame;
 import com.scrollrpg.game.item.Player;
@@ -31,12 +33,14 @@ public class GameScreen implements Screen{
 	
 	private Player mainPlayer;
 	
+	private Map currentMap;
+	
 	public GameScreen(MainGame g, I18NBundle i18nstrings, AssetsUtils assets){
 		this.g = g;
 		this.assets = assets;
 		this.i18nstrings = i18nstrings;
 		i18nmenu = assets.getManager().get("i18n/hud", I18NBundle.class);
-		map_controller = new MapController();
+		map_controller = new MapController(assets);
 		hud = new HUDUtils();
 		mainPlayer = new Player(new Texture(Gdx.files.internal("badlogic.jpg")));
 		create();
@@ -66,7 +70,7 @@ public class GameScreen implements Screen{
 		imagen.setFillParent(true);
 		
 		mainPlayer.setBounds(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, 100, 100);
-		
+				
 		stage.addActor(imagen);
 		
 		stage.addActor(mainPlayer);
@@ -75,6 +79,11 @@ public class GameScreen implements Screen{
 		// Ultima linea de todas, para que el HUD siempre quede arriba
 		hudStage = hud.createHUD(hudStage, skin, screenProportion, i18nmenu);
 		
+		loadMap();
+	}
+	
+	private void loadMap(){
+		currentMap = map_controller.getFirstMap();
 	}
 
 	@Override
@@ -84,12 +93,16 @@ public class GameScreen implements Screen{
 
 	@Override
 	public void render(float delta) {
+		System.out.println(mainPlayer.getX() + " - " + mainPlayer.getY() + " -- " + mainPlayer.getWidth() + " - " + mainPlayer.getHeight());
+		//System.out.println(stage.getViewport().getCamera().position.toString());
+		mainPlayer.update(currentMap, stage);
 		mainPlayer.move(stage);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		stage.act(delta);
 		hudStage.act(delta);
 		stage.draw();
+		currentMap.draw(stage.getBatch(), delta);
 		hudStage.draw();
 	}
 
