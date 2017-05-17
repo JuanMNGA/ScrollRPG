@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.scrollrpg.builder.item.Map;
+import com.scrollrpg.builder.item.Platform;
 import com.scrollrpg.game.entity.Entity;
 import com.scrollrpg.game.state.PlayerState;
 
@@ -20,6 +21,8 @@ public class Player extends Entity{
 	private float jump_pos;
 	
 	private boolean alreadyTouching = false;
+	
+	private Platform nearPlatform = null;
 
 	public Player(Texture texture) {
 		super(texture);
@@ -42,15 +45,28 @@ public class Player extends Entity{
 				cameraTranslate(new Vector3(horizontal_speed,0,0), stage);
 				state.move_right();
 			}else{
-				if(Gdx.input.isKeyPressed(Keys.W) && state.getState().equals("IDLE")){
+				if(Gdx.input.isKeyPressed(Keys.W) && (state.getState().equals("IDLE"))){// || state.getState().equals("MOVING_LEFT") || state.getState().equals("MOVING_RIGHT"))){
 					this.moveBy(0, jump_speed);
 					cameraTranslate(new Vector3(0,jump_speed,0), stage);
 					state.jumping();
 					jump_pos = this.getY() + max_jump_height; 
 					alreadyTouching = false;
 				}else{
-					if(state.getState().equals("MOVING_LEFT") || state.getState().equals("MOVING_RIGHT"))
-						state.idle();
+					if(Gdx.input.isKeyPressed(Keys.W) && state.getState().equals("MOVING_RIGHT")){
+						this.moveBy(horizontal_speed, jump_speed);
+						cameraTranslate(new Vector3(horizontal_speed,jump_speed,0), stage);
+						jump_pos = this.getY() + max_jump_height; 
+						alreadyTouching = false;
+						state.jumping_right();
+					}else{
+						if(Gdx.input.isKeyPressed(Keys.W) && state.getState().equals("MOVING_LEFT")){
+							this.moveBy(-horizontal_speed, jump_speed);
+							cameraTranslate(new Vector3(-horizontal_speed,jump_speed,0), stage);
+							jump_pos = this.getY() + max_jump_height; 
+							alreadyTouching = false;
+							state.jumping_left();
+						}
+					}
 				}
 			}
 		}
@@ -65,11 +81,36 @@ public class Player extends Entity{
 			}else{
 				state.falling();
 			}
-		}
-		if(state.getState().equals("FALLING") && !alreadyTouching){
-			touchAnyPlatform(map);
-			this.moveBy(0, gravity);
-			cameraTranslate(new Vector3(0, gravity, 0), stage);
+		}else{
+			if(state.getState().equals("JUMPING_LEFT")){
+				if(this.getY() <= jump_pos){
+					System.out.println(jump_pos);
+					this.moveBy(-horizontal_speed, jump_speed);
+					cameraTranslate(new Vector3(-horizontal_speed,jump_speed,0), stage);
+				}else{
+					state.falling();
+				}
+			}else{
+				if(state.getState().equals("JUMPING_RIGHT")){
+					if(this.getY() <= jump_pos){
+						System.out.println(jump_pos);
+						this.moveBy(horizontal_speed, jump_speed);
+						cameraTranslate(new Vector3(horizontal_speed,jump_speed,0), stage);
+					}else{
+						state.falling();
+					}
+				}else{
+					if(state.getState().equals("FALLING") && !alreadyTouching){
+						touchAnyPlatform(map);
+						this.moveBy(0, gravity);
+						cameraTranslate(new Vector3(0, gravity, 0), stage);
+					}else{
+						this.setY(nearPlatform.getRectangle().height);
+						stage.getViewport().getCamera().position.y = this.getY();
+						state.idle();
+					}
+				}
+			}
 		}
 	}
 	
@@ -79,16 +120,16 @@ public class Player extends Entity{
 	}
 	
 	private void touchAnyPlatform(Map map){
+		int platIndex = 0;
 		for(int i = 0; i < map.getPlatforms().size; ++i){
 			System.out.println(this.getY() - 1);
 			if(map.getPlatforms().get(i).getRectangle().contains(this.getX(), this.getY() - 1)){
 				state.idle();
-				this.setY(map.getPlatforms().get(i).getRectangle().height);
+				platIndex = i;
 				alreadyTouching = true;
-			}else{
-				state.falling();
 			}
 		}
+		nearPlatform = map.getPlatforms().get(platIndex);
 	}
 
 }

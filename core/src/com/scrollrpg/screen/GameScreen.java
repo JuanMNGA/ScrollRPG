@@ -93,7 +93,7 @@ public class GameScreen implements Screen{
 
 	@Override
 	public void render(float delta) {
-		System.out.println(mainPlayer.getX() + " - " + mainPlayer.getY() + " -- " + mainPlayer.getWidth() + " - " + mainPlayer.getHeight());
+		//System.out.println(mainPlayer.getX() + " - " + mainPlayer.getY() + " -- " + mainPlayer.getWidth() + " - " + mainPlayer.getHeight());
 		//System.out.println(stage.getViewport().getCamera().position.toString());
 		mainPlayer.update(currentMap, stage);
 		mainPlayer.move(stage);
