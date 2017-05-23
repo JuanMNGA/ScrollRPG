@@ -1,15 +1,19 @@
 package com.scrollrpg.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.utils.IntSet;
+import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.scrollrpg.builder.item.Map;
 import com.scrollrpg.controller.MapController;
@@ -35,6 +39,10 @@ public class GameScreen implements Screen{
 	
 	private Map currentMap;
 	
+	private IntSet downKeys;
+	
+	private InputMultiplexer inputAdapter;
+	
 	public GameScreen(MainGame g, I18NBundle i18nstrings, AssetsUtils assets){
 		this.g = g;
 		this.assets = assets;
@@ -43,7 +51,24 @@ public class GameScreen implements Screen{
 		map_controller = new MapController(assets);
 		hud = new HUDUtils();
 		mainPlayer = new Player(new Texture(Gdx.files.internal("badlogic.jpg")));
+		
 		create();
+	}
+	
+	private void onMultipleKeysDown (int mostRecentKeycode){
+	    //Keys that are currently down are in the IntSet. Do whatever you like, for example:
+		if (downKeys.contains(Input.Keys.W) && downKeys.contains(Input.Keys.A)){
+			System.out.println("SALTO_DIAGONAL");
+		}
+		if (downKeys.contains(Input.Keys.W) && downKeys.contains(Input.Keys.D)){
+			System.out.println("SALTO_DIAGONAL");
+		}
+	    //Alt-F4 to quit:
+	    if (downKeys.contains(Input.Keys.ALT_LEFT) || downKeys.contains(Input.Keys.ALT_RIGHT)){
+	        if (downKeys.size == 2 && mostRecentKeycode == Input.Keys.F4){
+	            Gdx.app.exit();
+	        }
+	    }
 	}
 	
 	private void create(){
@@ -51,8 +76,28 @@ public class GameScreen implements Screen{
 		stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		hudStage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		
+		downKeys = new IntSet(20);
+		
+		inputAdapter = new InputMultiplexer();
+		inputAdapter.addProcessor(new InputAdapter(){
+			public boolean keyDown (int keycode) {
+		        downKeys.add(keycode);
+		        if (downKeys.size >= 2){
+		            onMultipleKeysDown(keycode);
+		        }
+		        return true;
+		    }
+			
+			public boolean keyUp (int keycode) {
+		        downKeys.remove(keycode);
+		        return true;
+		    }
+		});
+		
+		inputAdapter.addProcessor(hudStage);
+		
 		// Nunca olvidar esta linea, sin ella, el stage no funciona
-		Gdx.input.setInputProcessor(hudStage);
+		Gdx.input.setInputProcessor(inputAdapter);
 		
 		skin = new SkinUtils().CreateSkin();
 		
