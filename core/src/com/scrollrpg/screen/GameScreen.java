@@ -39,10 +39,6 @@ public class GameScreen implements Screen{
 	
 	private Map currentMap;
 	
-	private IntSet downKeys;
-	
-	private InputMultiplexer inputAdapter;
-	
 	public GameScreen(MainGame g, I18NBundle i18nstrings, AssetsUtils assets){
 		this.g = g;
 		this.assets = assets;
@@ -55,49 +51,16 @@ public class GameScreen implements Screen{
 		create();
 	}
 	
-	private void onMultipleKeysDown (int mostRecentKeycode){
-	    //Keys that are currently down are in the IntSet. Do whatever you like, for example:
-		if (downKeys.contains(Input.Keys.W) && downKeys.contains(Input.Keys.A)){
-			System.out.println("SALTO_DIAGONAL");
-		}
-		if (downKeys.contains(Input.Keys.W) && downKeys.contains(Input.Keys.D)){
-			System.out.println("SALTO_DIAGONAL");
-		}
-	    //Alt-F4 to quit:
-	    if (downKeys.contains(Input.Keys.ALT_LEFT) || downKeys.contains(Input.Keys.ALT_RIGHT)){
-	        if (downKeys.size == 2 && mostRecentKeycode == Input.Keys.F4){
-	            Gdx.app.exit();
-	        }
-	    }
-	}
-	
 	private void create(){
 		
 		stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		hudStage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		
-		downKeys = new IntSet(20);
-		
-		inputAdapter = new InputMultiplexer();
-		inputAdapter.addProcessor(new InputAdapter(){
-			public boolean keyDown (int keycode) {
-		        downKeys.add(keycode);
-		        if (downKeys.size >= 2){
-		            onMultipleKeysDown(keycode);
-		        }
-		        return true;
-		    }
-			
-			public boolean keyUp (int keycode) {
-		        downKeys.remove(keycode);
-		        return true;
-		    }
-		});
-		
-		inputAdapter.addProcessor(hudStage);
+		mainPlayer.setStage(stage);
+		mainPlayer.getInputAdapter().addProcessor(hudStage);
 		
 		// Nunca olvidar esta linea, sin ella, el stage no funciona
-		Gdx.input.setInputProcessor(inputAdapter);
+		Gdx.input.setInputProcessor(mainPlayer.getInputAdapter());
 		
 		skin = new SkinUtils().CreateSkin();
 		
@@ -141,7 +104,7 @@ public class GameScreen implements Screen{
 		//System.out.println(mainPlayer.getX() + " - " + mainPlayer.getY() + " -- " + mainPlayer.getWidth() + " - " + mainPlayer.getHeight());
 		//System.out.println(stage.getViewport().getCamera().position.toString());
 		mainPlayer.update(currentMap, stage);
-		mainPlayer.move(stage);
+		//mainPlayer.move(stage);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		stage.act(delta);
