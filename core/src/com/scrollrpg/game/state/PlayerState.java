@@ -1,7 +1,7 @@
 package com.scrollrpg.game.state;
 
 public class PlayerState {
-	private enum States{IDLE, MOVING_LEFT, MOVING_RIGHT, JUMPING, JUMPING_LEFT, JUMPING_RIGHT, FALLING, TOUCH_FLOOR};
+	private enum States{IDLE, MOVING_LEFT, MOVING_RIGHT, JUMPING, JUMPING_LEFT, JUMPING_RIGHT, FALLING, FALLING_LEFT, FALLING_RIGHT, TOUCH_FLOOR};
 	
 	private States currentState;
 	
@@ -41,6 +41,16 @@ public class PlayerState {
 	
 	public void falling(){
 		currentState=States.FALLING;
+		debugCurrent();
+	}
+	
+	public void falling_left(){
+		currentState=States.FALLING_LEFT;
+		debugCurrent();
+	}
+	
+	public void falling_right(){
+		currentState=States.FALLING_RIGHT;
 		debugCurrent();
 	}
 	

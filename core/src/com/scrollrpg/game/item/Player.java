@@ -1,7 +1,5 @@
 package com.scrollrpg.game.item;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Input.Keys;
@@ -34,6 +32,8 @@ public class Player extends Entity{
 	private InputMultiplexer inputAdapter;
 	
 	private Stage stage;
+	
+	private int platIndex = 0;
 
 	public Player(Texture texture) {
 		super(texture);
@@ -41,7 +41,7 @@ public class Player extends Entity{
 		horizontal_speed = 5;
 		jump_speed = 5;
 		gravity = -10;
-		max_jump_height = 100;
+		max_jump_height = 150;
 		jump_pos = this.getY() + max_jump_height;
 		
 		downKeys = new IntSet(20);
@@ -56,8 +56,9 @@ public class Player extends Entity{
 			
 			public boolean keyUp (int keycode) {
 		        downKeys.remove(keycode);
-		        if(!state.getState().equals("JUMPING"))
+		        if(state.getState().equals("MOVING_LEFT") || state.getState().equals("MOVING_RIGHT")){
 		        	state.idle();
+		        }
 		        return true;
 		    }
 		});
@@ -67,39 +68,37 @@ public class Player extends Entity{
 		this.stage = stage;
 	}
 	
+	// Logica de movimiento
 	private void onSingleKeyDown(int mostRecentKeycode){
 		switch(mostRecentKeycode){
 		case Keys.W:
-			if(state.getState().equals("IDLE") && !state.getState().equals("FALLING")){
+			// Movimiento cuando se pulsa W (salto)
+			if(state.getState().equals("IDLE") && !state.getState().equals("FALLING") && !state.getState().equals("FALLING_LEFT") && !state.getState().equals("FALLING_RIGHT")){
 				salto();
+			}else{
+				if(state.getState().equals("MOVING_LEFT") && !state.getState().equals("FALLING") && !state.getState().equals("FALLING_LEFT") && !state.getState().equals("FALLING_RIGHT")){
+					salto_izquierda();
+				}else{
+					if(state.getState().equals("MOVING_RIGHT") && !state.getState().equals("FALLING") && !state.getState().equals("FALLING_LEFT") && !state.getState().equals("FALLING_RIGHT")){
+						salto_derecha();
+					}
+				}
 			}
 			break;
 		case Keys.A:
-			if(!state.getState().equals("JUMPING"))
+			// Movimiento horizontal izquierda
+			if(!state.getState().equals("JUMPING") && !state.getState().equals("JUMPING_LEFT") && !state.getState().equals("JUMPING_RIGHT") && !state.getState().equals("FALLING") && !state.getState().equals("FALLING_LEFT") && !state.getState().equals("FALLING_RIGHT"))
 				moverIzquierda();
 			break;
 		case Keys.D:
-			if(!state.getState().equals("JUMPING"))
+			// Movimiento horizontal derecha
+			if(!state.getState().equals("JUMPING") && !state.getState().equals("JUMPING_LEFT") && !state.getState().equals("JUMPING_RIGHT") && !state.getState().equals("FALLING") && !state.getState().equals("FALLING_LEFT") && !state.getState().equals("FALLING_RIGHT"))
 				moverDerecha();
+			break;
+		default:
 			break;
 		}
 		
-	}
-	
-	private void onMultipleKeysDown (int mostRecentKeycode){
-	    //Keys that are currently down are in the IntSet. Do whatever you like, for example:
-		if (downKeys.contains(Input.Keys.W) && downKeys.contains(Input.Keys.A)){
-			System.out.println("SALTO_DIAGONAL");
-		}
-		if (downKeys.contains(Input.Keys.W) && downKeys.contains(Input.Keys.D)){
-			System.out.println("SALTO_DIAGONAL");
-		}
-	    //Alt-F4 to quit:
-	    if (downKeys.contains(Input.Keys.ALT_LEFT) || downKeys.contains(Input.Keys.ALT_RIGHT)){
-	        if (downKeys.size == 2 && mostRecentKeycode == Input.Keys.F4){
-	            Gdx.app.exit();
-	        }
-	    }
 	}
 	
 	private void moverDerecha(){
@@ -110,6 +109,22 @@ public class Player extends Entity{
 		this.moveBy(0, jump_speed);
 		cameraTranslate(new Vector3(0,jump_speed,0), stage);
 		state.jumping();
+		jump_pos = this.getY() + max_jump_height; 
+		alreadyTouching = false;
+	}
+	
+	private void salto_izquierda(){
+		this.moveBy(-horizontal_speed, jump_speed);
+		cameraTranslate(new Vector3(-horizontal_speed,jump_speed,0), stage);
+		state.jumping_left();
+		jump_pos = this.getY() + max_jump_height; 
+		alreadyTouching = false;
+	}
+	
+	private void salto_derecha(){
+		this.moveBy(horizontal_speed, jump_speed);
+		cameraTranslate(new Vector3(horizontal_speed,jump_speed,0), stage);
+		state.jumping_right();
 		jump_pos = this.getY() + max_jump_height; 
 		alreadyTouching = false;
 	}
@@ -130,7 +145,6 @@ public class Player extends Entity{
 			}else{
 				if(state.getState().equals("JUMPING")){
 					if(this.getY() <= jump_pos){
-						System.out.println(jump_pos);
 						this.moveBy(0, jump_speed);
 						cameraTranslate(new Vector3(0,jump_speed,0), stage);
 					}else{
@@ -139,29 +153,37 @@ public class Player extends Entity{
 				}else{
 					if(state.getState().equals("JUMPING_LEFT")){
 						if(this.getY() <= jump_pos){
-							System.out.println(jump_pos);
 							this.moveBy(-horizontal_speed, jump_speed);
 							cameraTranslate(new Vector3(-horizontal_speed,jump_speed,0), stage);
 						}else{
-							state.falling();
+							state.falling_left();
 						}
 					}else{
 						if(state.getState().equals("JUMPING_RIGHT")){
 							if(this.getY() <= jump_pos){
-								System.out.println(jump_pos);
 								this.moveBy(horizontal_speed, jump_speed);
 								cameraTranslate(new Vector3(horizontal_speed,jump_speed,0), stage);
 							}else{
-								state.falling();
+								state.falling_right();
 							}
 						}else{
 							if(state.getState().equals("FALLING") && !alreadyTouching){
 								this.moveBy(0, gravity);
 								cameraTranslate(new Vector3(0, gravity, 0), stage);
 							}else{
-								this.setY(nearPlatform.getRectangle().height);
-								stage.getViewport().getCamera().position.y = this.getY();
-								state.idle();
+								if(state.getState().equals("FALLING_LEFT") && !alreadyTouching){
+									this.moveBy(-horizontal_speed, gravity);
+									cameraTranslate(new Vector3(-horizontal_speed, gravity, 0), stage);
+								}else{
+									if(state.getState().equals("FALLING_RIGHT") && !alreadyTouching){
+										this.moveBy(horizontal_speed, gravity);
+										cameraTranslate(new Vector3(horizontal_speed, gravity, 0), stage);
+									}else{
+										this.setY(nearPlatform.getRectangle().getY() + nearPlatform.getRectangle().height);
+										stage.getViewport().getCamera().position.y = this.getY();
+										state.idle();
+									}
+								}
 							}
 						}
 					}
@@ -176,16 +198,20 @@ public class Player extends Entity{
 	}
 	
 	private void touchAnyPlatform(Map map){
-		int platIndex = 0;
 		for(int i = 0; i < map.getPlatforms().size; ++i){
-			System.out.println(this.getY() - 1);
 			if(map.getPlatforms().get(i).getRectangle().overlaps(new Rectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight())) && !alreadyTouching){
 				state.idle();
 				platIndex = i;
 				alreadyTouching = true;
+			}else{
+				if(nearPlatform != null){
+					System.out.println((this.getX() + this.getWidth()));
+					//if(((this.getX() + this.getWidth()) < nearPlatform.getRectangle().x || (this.getX()) > nearPlatform.getRectangle().width) && (!state.getState().equals("IDLE") && !state.getState().equals("JUMPING") && !state.getState().equals("JUMPING_LEFT") && !state.getState().equals("JUMPING_RIGHT")))
+						//state.falling();
+				}
 			}
-			System.out.println(platIndex);
 		}
+		System.out.println(platIndex);
 		nearPlatform = map.getPlatforms().get(platIndex);
 	}
 	

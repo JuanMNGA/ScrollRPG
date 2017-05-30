@@ -23,6 +23,7 @@ public class MapBuilder {
 		Platform tmp_platform = new Platform();
 		tmp_map.addPlatform(new Platform(0, 0, 500, 100, assets.getManager().get("textures/bricks.png", Texture.class)));
 		tmp_map.addPlatform(new Platform(500, 100, 500, 100, assets.getManager().get("textures/bricks.png", Texture.class)));
+		tmp_map.addPlatform(new Platform(480, 360, 200, 100, assets.getManager().get("textures/bricks.png", Texture.class)));
 		MapList.add(tmp_map);
 	}
 	
