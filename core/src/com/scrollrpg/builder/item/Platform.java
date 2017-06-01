@@ -5,40 +5,51 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.World;
+import com.scrollrpg.builder.BoxBodyBuilder;
+import com.scrollrpg.constants.Constants;
+import com.scrollrpg.game.entity.Entity;
+import com.scrollrpg.game.state.PlayerState;
 
-public class Platform {
+public class Platform extends Entity{
+
+	public Body body;
 	
-	private Rectangle platformLogic;
-	private Sprite platformTile;
+	private String id;
 	
-	public Platform(){
-		platformLogic = new Rectangle();
-		platformTile = new Sprite();
+	private PlayerState state;
+	
+	private Vector2 position, size;
+	
+	public Platform(PlayerState state, String id, String type, String shapeType, World world, Vector2 position, Vector2 size, float density, float restitution, float friction, Vector2 linearMovement, Texture texture){
+		super(texture);
+		body = BoxBodyBuilder.createBody(type, shapeType, world, position, size, density, restitution, friction);
+		this.id = id;
+		body.setFixedRotation(true);
+		for(Fixture item : body.getFixtureList()){
+			item.setUserData(this);
+		}
+		this.state = state;
+		this.sprite.setBounds(position.x - size.x, position.y - size.y, size.x*2, size.y*2);
+		this.position = position;
+		this.size = size;
 	}
 	
-	public Platform(float x, float y, float width, float height, Texture texture){
-		platformLogic = new Rectangle();
-		platformTile = new Sprite();
-		platformLogic.set(x, y, width, height);
-		setSprite(texture);
+	public void hit(){
+		System.out.println(id + " :golpea");
+		state.touch_floor();
 	}
 	
-	public void setPlatform(float x, float y, float width, float height, Texture texture){
-		platformLogic.set(x, y, width, height);
-		setSprite(texture);
+	public void nohit(){
+		System.out.println(id + " :no golpea");
 	}
 	
-	private void setSprite(Texture texture){
-		platformTile.setTexture(texture);
-		platformTile.setBounds(platformLogic.getX(), platformLogic.getY(), platformLogic.getWidth(), platformLogic.getHeight());
-	}
-	
-	public Rectangle getRectangle(){
-		return platformLogic;
-	}
-	
-	public void draw(Batch batch, float delta){
-		batch.draw(platformTile, platformLogic.x, platformLogic.y, platformLogic.width, platformLogic.height);
+	public void draw(SpriteBatch batch, float parentAlpha){
+		super.draw(batch, parentAlpha);
+		this.sprite.setPosition(body.getPosition().x - size.x, body.getPosition().y - size.y);
 	}
 
 }

@@ -1,7 +1,9 @@
 package com.scrollrpg.controller;
 
+import com.badlogic.gdx.physics.box2d.World;
 import com.scrollrpg.builder.MapBuilder;
 import com.scrollrpg.builder.item.Map;
+import com.scrollrpg.game.state.PlayerState;
 import com.scrollrpg.utils.AssetsUtils;
 
 public class MapController {
@@ -10,9 +12,9 @@ public class MapController {
 	
 	private AssetsUtils assets;
 	
-	public MapController(AssetsUtils assets){
+	public MapController(AssetsUtils assets, World world, PlayerState state){
 		this.assets = assets;
-		map_builder = new MapBuilder(this.assets);
+		map_builder = new MapBuilder(this.assets, world, state);
 	}
 	
 	public Map getFirstMap(){

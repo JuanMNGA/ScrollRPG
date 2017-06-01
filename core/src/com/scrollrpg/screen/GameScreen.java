@@ -6,8 +6,12 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -15,17 +19,21 @@ import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.scrollrpg.box.sensor.PlayerSensor;
 import com.scrollrpg.builder.item.Map;
+import com.scrollrpg.constants.Constants;
 import com.scrollrpg.controller.MapController;
 import com.scrollrpg.game.MainGame;
 import com.scrollrpg.game.item.Player;
+import com.scrollrpg.input.PlayerInput;
+import com.scrollrpg.listener.CustomContactListener;
 import com.scrollrpg.utils.AssetsUtils;
 import com.scrollrpg.utils.HUDUtils;
 import com.scrollrpg.utils.SkinUtils;
 
 public class GameScreen implements Screen{
 	
-	private Stage stage, hudStage;
+	private Stage hudStage;
 	private Skin skin;
 	
 	private AssetsUtils assets;
@@ -39,28 +47,48 @@ public class GameScreen implements Screen{
 	
 	private Map currentMap;
 	
+	private World world;
+	
+	private SpriteBatch batch;
+	
+	Box2DDebugRenderer debugRenderer;
+	
+	private OrthographicCamera camera;
+	
+	private PlayerInput playerInput;
+	
 	public GameScreen(MainGame g, I18NBundle i18nstrings, AssetsUtils assets){
 		this.g = g;
 		this.assets = assets;
 		this.i18nstrings = i18nstrings;
 		i18nmenu = assets.getManager().get("i18n/hud", I18NBundle.class);
-		map_controller = new MapController(assets);
 		hud = new HUDUtils();
-		mainPlayer = new Player(new Texture(Gdx.files.internal("badlogic.jpg")));
+		
+		// Elementos normales de LibGDX
+		
+		batch = new SpriteBatch();
+		camera = new OrthographicCamera(Gdx.graphics.getWidth()/Constants.PIXELS_TO_METERS,Gdx.graphics.getHeight()/Constants.PIXELS_TO_METERS);
+		
+		debugRenderer = new Box2DDebugRenderer();
+		
+		world = new World(new Vector2(0, -10f), true);
+		world.setContactListener(new CustomContactListener());
+		mainPlayer = new Player(assets.getManager().get("textures/bricks.png", Texture.class), world, "Player");
+		map_controller = new MapController(assets, world, mainPlayer.getState());
 		
 		create();
 	}
 	
 	private void create(){
 		
-		stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		hudStage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		
-		mainPlayer.setStage(stage);
-		mainPlayer.getInputAdapter().addProcessor(hudStage);
+		playerInput = new PlayerInput(mainPlayer.getState());
+		
+		playerInput.getInput().addProcessor(hudStage);
 		
 		// Nunca olvidar esta linea, sin ella, el stage no funciona
-		Gdx.input.setInputProcessor(mainPlayer.getInputAdapter());
+		Gdx.input.setInputProcessor(playerInput.getInput());
 		
 		skin = new SkinUtils().CreateSkin();
 		
@@ -73,16 +101,6 @@ public class GameScreen implements Screen{
 		float percentageH = 0.1f;
 		
 		Vector2 screenProportion = new Vector2(Gdx.graphics.getWidth()*percentageW, Gdx.graphics.getHeight()*percentageH);
-		
-		final Image imagen = new Image(new Texture(Gdx.files.internal("badlogic.jpg")));
-		imagen.setFillParent(true);
-		
-		mainPlayer.setBounds(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, 100, 100);
-				
-		stage.addActor(imagen);
-		
-		stage.addActor(mainPlayer);
-		
 		// Create hud
 		// Ultima linea de todas, para que el HUD siempre quede arriba
 		hudStage = hud.createHUD(hudStage, skin, screenProportion, i18nmenu);
@@ -101,17 +119,20 @@ public class GameScreen implements Screen{
 
 	@Override
 	public void render(float delta) {
-		//System.out.println(mainPlayer.getX() + " - " + mainPlayer.getY() + " -- " + mainPlayer.getWidth() + " - " + mainPlayer.getHeight());
-		//System.out.println(stage.getViewport().getCamera().position.toString());
-		mainPlayer.update(currentMap, stage);
-		//mainPlayer.move(stage);
+		world.step(1f/60f, 6, 2);
+		//camera.update();
+		mainPlayer.update(camera);
+		
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
-		stage.act(delta);
 		hudStage.act(delta);
-		stage.draw();
-		currentMap.draw(stage.getBatch(), delta);
 		hudStage.draw();
+		batch.begin();
+		currentMap.draw(batch, delta);
+		mainPlayer.draw(batch, delta);
+		batch.end();
+		batch.setProjectionMatrix(camera.combined);
+		debugRenderer.render(world, batch.getProjectionMatrix());
 	}
 
 	@Override
@@ -136,7 +157,7 @@ public class GameScreen implements Screen{
 
 	@Override
 	public void dispose() {
-		stage.dispose();
+		
 	}
 
 }

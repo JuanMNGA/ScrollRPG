@@ -1,6 +1,7 @@
 package com.scrollrpg.builder.item;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 
 public class Map {
@@ -60,11 +61,9 @@ public class Map {
 		}
 	}
 	
-	public void draw(Batch batch, float delta){
-		batch.begin();
-		for(int i = 0; i < platforms.size; ++i){
-			platforms.get(i).draw(batch, delta);
+	public void draw(SpriteBatch batch, float parentAlpha){
+		for(Platform plat : platforms){
+			plat.draw(batch, parentAlpha);
 		}
-		batch.end();
 	}
 }

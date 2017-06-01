@@ -60,7 +60,7 @@ public class PlayerState {
 	}
 	
 	private void debugCurrent(){
-		//System.out.println(currentState.name());
+		System.out.println(currentState.name());
 	}
 	
 	public String getState(){
