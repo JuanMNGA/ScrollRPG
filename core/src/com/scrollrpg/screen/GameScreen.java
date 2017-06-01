@@ -1,9 +1,6 @@
 package com.scrollrpg.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -13,13 +10,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.I18NBundle;
-import com.badlogic.gdx.utils.IntSet;
-import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.scrollrpg.box.sensor.PlayerSensor;
 import com.scrollrpg.builder.item.Map;
 import com.scrollrpg.constants.Constants;
 import com.scrollrpg.controller.MapController;
@@ -36,9 +29,12 @@ public class GameScreen implements Screen{
 	private Stage hudStage;
 	private Skin skin;
 	
+	@SuppressWarnings("unused")
 	private AssetsUtils assets;
 	private HUDUtils hud;
+	@SuppressWarnings("unused")
 	private I18NBundle i18nstrings, i18nmenu;
+	@SuppressWarnings("unused")
 	private MainGame g;
 	
 	private MapController map_controller;

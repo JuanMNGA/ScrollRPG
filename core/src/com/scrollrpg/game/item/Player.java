@@ -1,24 +1,15 @@
 package com.scrollrpg.game.item;
 
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.IntSet;
 import com.scrollrpg.box.sensor.PlayerSensor;
 import com.scrollrpg.builder.BoxBodyBuilder;
-import com.scrollrpg.builder.item.Map;
-import com.scrollrpg.builder.item.Platform;
-import com.scrollrpg.constants.Constants;
 import com.scrollrpg.game.entity.Entity;
 import com.scrollrpg.game.state.PlayerState;
 
@@ -59,7 +50,6 @@ public class Player extends Entity{
 	}
 	
 	public void update(OrthographicCamera camera){
-		//this.sprite.setPosition(body.getPosition().x - 0.5f, body.getPosition().y - 0.5f);
 		switch(state.getState()){
 		default:
 			break;

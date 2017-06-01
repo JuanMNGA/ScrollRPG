@@ -1,12 +1,10 @@
 package com.scrollrpg.builder;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.scrollrpg.builder.item.*;
-import com.scrollrpg.constants.Constants;
 import com.scrollrpg.game.state.PlayerState;
 import com.scrollrpg.utils.AssetsUtils;
 
