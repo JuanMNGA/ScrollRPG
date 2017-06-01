@@ -37,7 +37,7 @@ public class Player extends Entity{
 		}
 		state = new PlayerState();
 		sensor = new PlayerSensor(world, this, "PlayerSensor");
-		this.sprite.setBounds(body.getPosition().x - 0.5f, body.getPosition().y - 0.5f, 1, 2);
+		this.sprite.setBounds(body.getPosition().x, body.getPosition().y, 0.5f, 1);
 	}
 	
 	private void cameraTranslate(Vector3 pos, OrthographicCamera camera){
@@ -54,20 +54,20 @@ public class Player extends Entity{
 		default:
 			break;
 		case "MOVING_LEFT":
-			if(body.getLinearVelocity().x > -4f)
-				body.applyForceToCenter(new Vector2(-1.5f, 0), true);
+			if(body.getLinearVelocity().x > -2f)
+				body.applyForceToCenter(new Vector2(-0.5f, 0), true);
 			break;
 		case "MOVING_RIGHT":
-			if(body.getLinearVelocity().x < 4f)
-				body.applyForceToCenter(new Vector2(1.5f, 0), true);
+			if(body.getLinearVelocity().x < 2f)
+				body.applyForceToCenter(new Vector2(0.5f, 0), true);
 			break;
 		case "JUMPING":
-			body.applyLinearImpulse(new Vector2(0, 1.5f), body.getLocalCenter(), true);
+			body.applyLinearImpulse(new Vector2(0, 0.2f), body.getLocalCenter(), true);
 			state.falling();
 			break;
 		}
 		cameraTranslate(new Vector3(body.getPosition().x, body.getPosition().y, 0), camera);
-		sensor.body.setTransform(body.getPosition().add(new Vector2(0, -size.y)), 0);
+		sensor.body.setTransform(body.getPosition().add(new Vector2(0, -size.y/2)), 0);
 	}
 	
 	public PlayerState getState(){
@@ -75,7 +75,7 @@ public class Player extends Entity{
 	}
 	
 	public void draw(SpriteBatch batch, float parentAlpha){
-		this.sprite.setPosition(body.getPosition().x - size.x, body.getPosition().y - size.y);
+		this.sprite.setPosition(body.getPosition().x - size.x/2, body.getPosition().y - size.y/2);
 		super.draw(batch, parentAlpha);
 	}
 

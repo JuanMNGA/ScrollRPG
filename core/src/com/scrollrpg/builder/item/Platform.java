@@ -29,7 +29,7 @@ public class Platform extends Entity{
 			item.setUserData(this);
 		}
 		this.state = state;
-		this.sprite.setBounds(position.x - size.x, position.y - size.y, size.x*2, size.y*2);
+		this.sprite.setBounds(position.x - size.x, position.y - size.y, size.x, size.y);
 		this.position = position;
 		this.size = size;
 	}
@@ -45,7 +45,7 @@ public class Platform extends Entity{
 	
 	public void draw(SpriteBatch batch, float parentAlpha){
 		super.draw(batch, parentAlpha);
-		this.sprite.setPosition(body.getPosition().x - size.x, body.getPosition().y - size.y);
+		this.sprite.setPosition(body.getPosition().x - size.x/2, body.getPosition().y - size.y/2);
 	}
 
 }

@@ -54,7 +54,7 @@ public class BoxBodyBuilder {
 			return body;
 		case "SQUARE":
 			PolygonShape polyShape = new PolygonShape();
-			polyShape.setAsBox(size.x, size.y);
+			polyShape.setAsBox(size.x/2, size.y/2);
 			fixtureDef.shape = polyShape;
 			if(density != 0)
 				fixtureDef.density = density;
@@ -120,7 +120,7 @@ public class BoxBodyBuilder {
 			return body;
 		case "SQUARE":
 			PolygonShape polyShape = new PolygonShape();
-			polyShape.setAsBox(size.x, size.y);
+			polyShape.setAsBox(size.x/2, size.y/2);
 			fixtureDef.shape = polyShape;
 			if(density != 0)
 				fixtureDef.density = density;
@@ -134,7 +134,7 @@ public class BoxBodyBuilder {
 		default:
 			PolygonShape defaultShape = new PolygonShape();
 			//defaultShape.set(vertices);
-			defaultShape.setAsBox(size.x, size.y);
+			defaultShape.setAsBox(size.x/2, size.y/2);
 			fixtureDef.shape = defaultShape;
 			if(density != 0)
 				fixtureDef.density = density;
@@ -155,7 +155,7 @@ public class BoxBodyBuilder {
 		Body body = world.createBody(bodyDef);
 		FixtureDef fixtureDef = new FixtureDef();
 		PolygonShape polyShape = new PolygonShape();
-		polyShape.setAsBox(size.x, size.y);
+		polyShape.setAsBox(size.x/2, size.y/2);
 		fixtureDef.shape = polyShape;
 		fixtureDef.density = 0;
 		fixtureDef.isSensor = true;
