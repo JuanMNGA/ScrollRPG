@@ -26,6 +26,7 @@ public class MapBuilder {
 		tmp_map.addPlatform(new Platform(state, "PLT1", "STATIC", "SQUARE", world, new Vector2(0,-3f), new Vector2(5f, 2f), 0, 0, 0, null, assets.getManager().get("textures/bricks.png", Texture.class)));
 		tmp_map.addPlatform(new Platform(state, "PLT2", "STATIC", "SQUARE", world, new Vector2(0, 0.5f), new Vector2(0.4f, 0.2f), 0, 0, 0, null, assets.getManager().get("textures/bricks.png", Texture.class)));
 		tmp_map.addPlatform(new Platform(state, "PLT3", "STATIC", "SQUARE", world, new Vector2(0.8f, 1.5f), new Vector2(0.4f, 0.2f), 0, 0, 0, null, assets.getManager().get("textures/bricks.png", Texture.class)));
+		tmp_map.addPlatform(new Platform(state, "PLT4", "STATIC", "SQUARE", world, new Vector2(1.5f, 0.7f), new Vector2(0.4f, 0.2f), 0, 0, 0, null, assets.getManager().get("textures/bricks.png", Texture.class)));
 		MapList.add(tmp_map);
 	}
 	

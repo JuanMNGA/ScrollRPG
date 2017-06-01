@@ -2,6 +2,7 @@ package com.scrollrpg.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -53,6 +54,8 @@ public class GameScreen implements Screen{
 	
 	private PlayerInput playerInput;
 	
+	private FPSLogger fpslogger;
+	
 	public GameScreen(MainGame g, I18NBundle i18nstrings, AssetsUtils assets){
 		this.g = g;
 		this.assets = assets;
@@ -72,6 +75,7 @@ public class GameScreen implements Screen{
 		mainPlayer = new Player(assets.getManager().get("textures/bricks.png", Texture.class), world, "Player");
 		map_controller = new MapController(assets, world, mainPlayer.getState());
 		
+		fpslogger = new FPSLogger();
 		create();
 	}
 	
@@ -129,6 +133,7 @@ public class GameScreen implements Screen{
 		hudStage.act(delta);
 		hudStage.draw();
 		debugRenderer.render(world, batch.getProjectionMatrix());
+		//fpslogger.log();
 	}
 
 	@Override

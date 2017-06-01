@@ -47,12 +47,12 @@ public class CustomContactListener implements ContactListener{
 				Platform plA = (Platform) fixA.getUserData();
 				PlayerSensor plB = (PlayerSensor) fixB.getUserData();
 			
-				plA.hit();
+				plA.nohit();
 			}else{
 				PlayerSensor plA = (PlayerSensor) fixA.getUserData();
 				Platform plB = (Platform) fixB.getUserData();
 			
-				plB.hit();
+				plB.nohit();
 			}
 		}
 	}
