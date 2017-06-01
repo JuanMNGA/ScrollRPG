@@ -125,13 +125,13 @@ public class GameScreen implements Screen{
 		
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
-		hudStage.act(delta);
-		hudStage.draw();
 		batch.begin();
 		currentMap.draw(batch, delta);
 		mainPlayer.draw(batch, delta);
 		batch.end();
 		batch.setProjectionMatrix(camera.combined);
+		hudStage.act(delta);
+		hudStage.draw();
 		debugRenderer.render(world, batch.getProjectionMatrix());
 	}
 

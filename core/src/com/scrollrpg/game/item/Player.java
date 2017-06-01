@@ -31,10 +31,14 @@ public class Player extends Entity{
 	private final PlayerState state;
 	
 	private PlayerSensor sensor;
+	
+	private Vector2 size, position;
 
 	public Player(Texture texture, World world, String id) {
 		super(texture);
-		body = BoxBodyBuilder.createBody("DYNAMIC", "SQUARE",world, new Vector2(-0.5f,1f), new Vector2(0.5f, 0.5f), 0.1f, 0.2f, 0.5f);
+		size = new Vector2(0.5f, 1f);
+		position = new Vector2(-0.5f,1f);
+		body = BoxBodyBuilder.createBody("DYNAMIC", "SQUARE",world, position, size , 0.1f, 0.2f, 0.5f);
 		this.id = id;
 		body.setFixedRotation(true);
 		for(Fixture item : body.getFixtureList()){
@@ -42,6 +46,7 @@ public class Player extends Entity{
 		}
 		state = new PlayerState();
 		sensor = new PlayerSensor(world, this, "PlayerSensor");
+		this.sprite.setBounds(body.getPosition().x - 0.5f, body.getPosition().y - 0.5f, 1, 2);
 	}
 	
 	private void cameraTranslate(Vector3 pos, OrthographicCamera camera){
@@ -54,25 +59,25 @@ public class Player extends Entity{
 	}
 	
 	public void update(OrthographicCamera camera){
-		this.sprite.setPosition(body.getPosition().x - 0.5f, body.getPosition().y - 0.5f);
+		//this.sprite.setPosition(body.getPosition().x - 0.5f, body.getPosition().y - 0.5f);
 		switch(state.getState()){
 		default:
 			break;
 		case "MOVING_LEFT":
 			if(body.getLinearVelocity().x > -4f)
-				body.applyForceToCenter(new Vector2(-1f, 0), true);
+				body.applyForceToCenter(new Vector2(-1.5f, 0), true);
 			break;
 		case "MOVING_RIGHT":
 			if(body.getLinearVelocity().x < 4f)
-				body.applyForceToCenter(new Vector2(1f, 0), true);
+				body.applyForceToCenter(new Vector2(1.5f, 0), true);
 			break;
 		case "JUMPING":
-			body.applyLinearImpulse(new Vector2(0, 0.7f), body.getLocalCenter(), true);
+			body.applyLinearImpulse(new Vector2(0, 1.5f), body.getLocalCenter(), true);
 			state.falling();
 			break;
 		}
 		cameraTranslate(new Vector3(body.getPosition().x, body.getPosition().y, 0), camera);
-		sensor.body.setTransform(body.getPosition().add(new Vector2(0, -0.5f)), 0);
+		sensor.body.setTransform(body.getPosition().add(new Vector2(0, -size.y)), 0);
 	}
 	
 	public PlayerState getState(){
@@ -80,7 +85,7 @@ public class Player extends Entity{
 	}
 	
 	public void draw(SpriteBatch batch, float parentAlpha){
-		this.sprite.setBounds(body.getPosition().x - 0.5f, body.getPosition().y - 0.5f, 1, 1);
+		this.sprite.setPosition(body.getPosition().x - size.x, body.getPosition().y - size.y);
 		super.draw(batch, parentAlpha);
 	}
 
