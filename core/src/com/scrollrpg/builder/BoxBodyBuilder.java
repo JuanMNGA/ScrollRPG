@@ -68,6 +68,7 @@ public class BoxBodyBuilder {
 		default:
 			PolygonShape defaultShape = new PolygonShape();
 			defaultShape.set(vertices);
+			System.out.println(defaultShape.getVertexCount());
 			fixtureDef.shape = defaultShape;
 			if(density != 0)
 				fixtureDef.density = density;

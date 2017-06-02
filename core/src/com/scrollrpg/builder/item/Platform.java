@@ -34,6 +34,20 @@ public class Platform extends Entity{
 		this.size = size;
 	}
 	
+	public Platform(PlayerState state, String id, String type, String shapeType, World world, Vector2 position, Vector2 size, float density, float restitution, float friction, Vector2 linearMovement, Vector2[] vertices, Texture texture){
+		super(texture);
+		body = BoxBodyBuilder.createBody(type, shapeType, world, position, size, density, restitution, friction, vertices);
+		this.id = id;
+		body.setFixedRotation(true);
+		for(Fixture item : body.getFixtureList()){
+			item.setUserData(this);
+		}
+		this.state = state;
+		this.sprite.setBounds(position.x - size.x, position.y - size.y, size.x, size.y);
+		this.position = position;
+		this.size = size;
+	}
+	
 	public void hit(){
 		System.out.println(id + " :golpea");
 		state.touch_floor();
